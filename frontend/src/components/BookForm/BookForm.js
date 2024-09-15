@@ -47,7 +47,7 @@ const BookForm = () => {
             id="author"
             type="text"
             value={author}
-            placeholder="Enter The Auther Name"
+            placeholder="Enter The Author Name"
             onChange={(e) => setAuthor(e.target.value)}
           ></input>
         </div>
