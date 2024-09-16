@@ -51,7 +51,7 @@ const Filter = () => {
           />
         </div>
         <div className="filter-group">
-          <label>
+          <label className="check-box">
             <input
               type="checkbox"
               checked={favoriteFilter}

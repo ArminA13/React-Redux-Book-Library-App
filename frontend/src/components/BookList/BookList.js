@@ -5,12 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   selectTitleFilter,
   selectAuthorFilter,
+  selectOnlyFavoriteFilter,
 } from "../../redux/slices/filterSlice";
 
 const BookList = () => {
   const books = useSelector((state) => state.books);
   const titleFilter = useSelector(selectTitleFilter);
   const authorFilter = useSelector(selectAuthorFilter);
+  const favoriteFilter = useSelector(selectOnlyFavoriteFilter);
   const dispatch = useDispatch();
 
   const handleDeleteBook = (id) => {
@@ -28,8 +30,25 @@ const BookList = () => {
     const matchesAuthor = book.author
       .toLowerCase()
       .includes(authorFilter.toLowerCase());
-    return matchesTitle && matchesAuthor;
+    const matchesFavorite = favoriteFilter ? book.isFavorite : true;
+    return matchesTitle && matchesAuthor && matchesFavorite;
   });
+
+  const highlightMatch = (text, filter) => {
+    if (!filter) return text;
+    const regex = new RegExp(`(${filter})`, "gi");
+    return text.split(regex).map((substring, i) => {
+      if (substring.toLowerCase() === filter.toLowerCase()) {
+        return (
+          <span key={i} className="highlight">
+            {substring}
+          </span>
+        );
+      }
+      return substring;
+    });
+  };
+
   return (
     <div className="app-block book-list">
       <h2>Book List</h2>
@@ -40,7 +59,8 @@ const BookList = () => {
           {filteredBooks.map((book, index) => (
             <li key={book.id}>
               <div className="book-info">
-                {++index}. {book.title} by <strong>{book.author}</strong>
+                {++index}. {highlightMatch(book.title, titleFilter)} by{" "}
+                <strong>{highlightMatch(book.author, authorFilter)}</strong>
               </div>
 
               <div className="book-actions">
